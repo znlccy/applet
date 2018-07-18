@@ -17,6 +17,7 @@ class Anchor extends Controller {
      * 获取前十的主播数量
      */
     public function getLast($page) {
+
         $pagenumber = request()->param('pagenumber');
         if (!isset($pagenumber) || empty($pagenumber)) {
             $anchor = Db::table('dede_uploads')
@@ -44,8 +45,6 @@ class Anchor extends Controller {
                 ->paginate($pagenumber, false, ['query' => $page]);
         }
 
-
-
         //遍历数组
         /*foreach ($data as $key => $value) {
             $anchor[$key]['aid'] = $value['aid'];
@@ -69,7 +68,7 @@ class Anchor extends Controller {
             return json_encode($result);
         }*/
 
-        $data = json_encode($anchor);
+        $data = json($anchor);
 
         return $data;
     }

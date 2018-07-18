@@ -23,12 +23,12 @@ class News extends Controller {
         $pagenumber = request()->param('pagenumber');
         if (!isset($pagenumber) || empty($pagenumber)) {
             $data = Db::table('dede_archives')
-                ->where('title', 'not like', '%华星%')
+                ->where('typeid', 'in', [22,26,27,28])
                 ->field('id,title,shorttitle,writer,source,litpic,pubdate,senddate,keywords,description')
                 ->paginate(10,false, ['query' => $page]);
         } else {
             $data = Db::table('dede_archives')
-                ->where('title', 'not like', '%华星%')
+                ->where('typeid', 'in', [22,26,27,28])
                 ->field('id,title,shorttitle,writer,source,litpic,pubdate,senddate,keywords,description')
                 ->paginate($pagenumber,false, ['query' => $page]);
         }

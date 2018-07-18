@@ -52,36 +52,38 @@ class Upload extends Controller {
      */
     public function upload() {
         //获取表单上传文件
-        $image = request()->file('image');
+        $images = request()->file('image');
         $title = request()->param('title');
         $content = request()->param('content');
         $update_time = 0;
         $create_time = time();
 
-        //移动到框架应用根目录/public/uploads目录下
-        $info = $image->move(ROOT_PATH . 'public' . DS . 'uploads');
-        if ($info) {
-            //成功上传后，获取上传信息
-            //输出jpg
-            /*echo '文件扩展名:' . $info->getExtension() .'<br>';*/
-            //输出文件格式
-            /*echo '文件详细的路径加文件名:' . $info->getSaveName() .'<br>';*/
-            //输出文件名称
-            /*echo '文件保存的名:' . $info->getFilename();*/
-            $sub_path = str_replace('\\', '/', $info->getSaveName());
-            $image_path =  'public/' . 'uploads/' . $sub_path;
-            $insert_data = ['title' => $title, 'image' => $image_path, 'content' => $content, 'update_time' => 0, 'create_time' => $create_time];
-            $config = Db::connect('db_config');
-            $id = $config->table('zb_web_complain')
-                ->insertGetId($insert_data);
+        foreach ($images as $image) {
+            //移动到框架应用根目录/public/uploads目录下
+            $info = $image->move(ROOT_PATH . 'public' . DS . 'uploads');
+            if ($info) {
+                //成功上传后，获取上传信息
+                //输出jpg
+                /*echo '文件扩展名:' . $info->getExtension() .'<br>';*/
+                //输出文件格式
+                /*echo '文件详细的路径加文件名:' . $info->getSaveName() .'<br>';*/
+                //输出文件名称
+                /*echo '文件保存的名:' . $info->getFilename();*/
+                $sub_path = str_replace('\\', '/', $info->getSaveName());
+                $image_path =  'public/' . 'uploads/' . $sub_path;
+                $insert_data = ['title' => $title, 'image' => $image_path, 'content' => $content, 'update_time' => 0, 'create_time' => $create_time];
+                $config = Db::connect('db_config');
+                $id = $config->table('zb_web_complain')
+                    ->insertGetId($insert_data);
 
-            if ($id >=0 ) {
-                return json(['code' => '200', 'message' => '投诉成功!', 'id' => $id]);
+                if ($id >=0 ) {
+                    return json(['code' => '200', 'message' => '投诉成功!', 'id' => $id]);
+                }
+            } else {
+                //上传失败获取错误信息
+                return json(['code' => '400', 'message' => '投诉失败!' . $image->getError()]);
+                /*echo $image->getError();*/
             }
-        } else {
-            //上传失败获取错误信息
-            return json(['code' => '400', 'message' => '投诉失败!' . $image->getError()]);
-            /*echo $image->getError();*/
         }
     }
 }
