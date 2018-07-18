@@ -20,7 +20,7 @@ class Anchor extends Controller {
 
         $pagenumber = request()->param('pagenumber');
         if (!isset($pagenumber) || empty($pagenumber)) {
-            $anchor = Db::table('dede_uploads')
+            /*$anchor = Db::table('dede_uploads')
             ->alias('a')
             ->group('a.arcid')
             ->distinct(true)
@@ -30,9 +30,13 @@ class Anchor extends Controller {
             ->whereOr('title', 'like', '%华星网红%')
             ->whereOr('title', 'like', '%华星主播%')
             ->join('dede_addonarticle b', 'a.arcid = b.aid')
-            ->paginate(10, false, ['query' => $page]);
+            ->paginate(10, false, ['query' => $page]);*/
+            $anchor = Db::table('dede_archives')
+                ->where('typeid','=','9')
+                ->field('id,title,click,shorttitle,writer,source,litpic,pubdate,senddate,keywords,description,weight')
+                ->paginate(10, false, ['query' => $page]);
         } else {
-            $anchor = Db::table('dede_uploads')
+            /*$anchor = Db::table('dede_uploads')
                 ->alias('a')
                 ->group('a.arcid')
                 ->distinct(true)
@@ -42,31 +46,12 @@ class Anchor extends Controller {
                 ->whereOr('title', 'like', '%华星网红%')
                 ->whereOr('title', 'like', '%华星主播%')
                 ->join('dede_addonarticle b', 'a.arcid = b.aid')
+                ->paginate($pagenumber, false, ['query' => $page]);*/
+            $anchor = Db::table('dede_archives')
+                ->where('typeid','=','9')
+                ->field('id,title,click,shorttitle,writer,source,litpic,pubdate,senddate,keywords,description,weight')
                 ->paginate($pagenumber, false, ['query' => $page]);
         }
-
-        //遍历数组
-        /*foreach ($data as $key => $value) {
-            $anchor[$key]['aid'] = $value['aid'];
-            $anchor[$key]['title'] = $value['title'];
-            $anchor[$key]['url'] = $value['url'];
-            $anchor[$key]['playtime'] = $value['playtime'];
-            $anchor[$key]['uptime'] = $value['uptime'];
-            $anchor['description'] = strip_tags($value['body'],"<img>");
-            return json($anchor);
-        }*/
-
-        /*遍历对象数组*/
-        /*for ($i = 0; $i <10; $i++) {
-            $result = $data[$i];
-            $aid = $result['aid'];
-            $title = $result['title'];
-            $url = $result['url'];
-            $playtime = $result['playtime'];
-            $uptime = $result['uptime'];
-            $body = strip_tags($result['body'], '<img>');
-            return json_encode($result);
-        }*/
 
         $data = json($anchor);
 
